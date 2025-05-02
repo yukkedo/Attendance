@@ -1,0 +1,14 @@
+.header {
+    background-color: #000000;
+    height: 80px;
+    width: 100%;
+}
+
+.header__link {
+    line-height: 80px;
+}
+
+.header__img {
+    width: auto;
+    height: 40px;
+}
