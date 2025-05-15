@@ -15,6 +15,10 @@
 }
 
 .header-nav__item--button {
+    background-color: #000000;
+    font-size: 20px;
+    color: #ffffff;
+    border: none;
     cursor: pointer;
 }
 

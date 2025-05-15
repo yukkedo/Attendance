@@ -15,9 +15,9 @@
         <li><a href="" class="header-nav__list">勤怠一覧</a></li>
         <li><a href="" class="header-nav__application">申請</a></li>
         <li>
-            <form action="" class="logout" method="">
+            <form action="/logout" class="logout" method="post">
                 @csrf
-                <a class="header-nav__item--button">ログアウト</a>
+                <button class="header-nav__item--button">ログアウト</button>
             </form>
         </li>
     </ul>

@@ -14,7 +14,8 @@
         <h2>会員登録</h2>
     </div>
 
-    <form action="" class="form__content">
+    <form action="/register" class="form__content" method="post">
+        @csrf
         <div class="form__group">
             <div class="form__group--title">
                 <span class="form__label--item">名前</span>
