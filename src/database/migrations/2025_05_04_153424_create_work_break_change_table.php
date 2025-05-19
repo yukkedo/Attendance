@@ -18,7 +18,7 @@ class CreateWorkBreakChangeTable extends Migration
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->foreignId('work_break_id')->constrained()->cascadeOnDelete();
             $table->time('break_start');
-            $table->time('break_end');
+            $table->time('break_end')->nullable();
             $table->string('remarks')->nullable();
             $table->enum('status', ['pending', 'approved'])->default('pending');
             $table->foreignId('admin_id')->nullable()->constrained()->onDelete('set null');

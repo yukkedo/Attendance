@@ -1,7 +1,8 @@
 <?php
 
-use App\Http\Controllers\AttendanceController;
+use App\Http\Controllers\TimeClockController;
 use App\Http\Controllers\AuthController;
+use App\Models\Attendance;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -22,4 +23,9 @@ Route::get('/', function () {
 Route::get('/login', [AuthController::class, 'loginShow'])->name('login');
 
 Route::middleware('auth')->group(function () {
-     Route::get('/attendance', [AttendanceController::class, 'index']);});
+    Route::get('/attendance', [TimeClockController::class, 'index']);
+    Route::post('/attendance/clockIn', [TimeClockController::class, 'clockIn']);
+    Route::post('/attendance/clockOut', [TimeClockController::class, 'clockOut']);
+    Route::post('/attendance/breakStart', [TimeClockController::class, 'breakStart']);
+    Route::post('/attendance/breakEnd', [TimeClockController::class, 'breakEnd']);
+});
