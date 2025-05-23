@@ -12,7 +12,7 @@
 <nav class="header-nav">
     <ul class="header-nav__list">
         <li><a href="/attendance" class="header-nav__attendance">勤怠</a></li>
-        <li><a href="" class="header-nav__list">勤怠一覧</a></li>
+        <li><a href="/attendance/list" class="header-nav__list">勤怠一覧</a></li>
         <li><a href="" class="header-nav__application">申請</a></li>
         <li>
             <form action="/logout" class="logout" method="post">

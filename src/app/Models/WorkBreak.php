@@ -20,7 +20,7 @@ class WorkBreak extends Model
         return $this->belongsTo(Attendance::class);
     }
 
-    public function work_break_change()
+    public function workBreakChange()
     {
         return $this->hasOne(WorkBreak_change::class);
     }
