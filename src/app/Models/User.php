@@ -52,9 +52,4 @@ class User extends Authenticatable
     {
         return $this->hasMany(Attendance_change::class);
     }
-
-    public function workBreakChange()
-    {
-        return $this->hasMany(WorkBreak_change::class);
-    }
 }

@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateAttendanceChangeTable extends Migration
+class CreateWorkBreakChangesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,12 @@ class CreateAttendanceChangeTable extends Migration
      */
     public function up()
     {
-        Schema::create('attendance_change', function (Blueprint $table) {
+        Schema::create('work_break_changes', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('attendance_id')->constrained()->cascadeOnDelete();
-            $table->time('clock_in');
-            $table->time('clock_out');
-            $table->string('remarks')->nullable();
+            $table->foreignId('work_break_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('attendance_change_id')->constrained()->cascadeOnDelete();
+            $table->time('new_break_start');
+            $table->time('new_break_end')->nullable();
             $table->enum('status', ['pending', 'approved'])->default('pending');
             $table->foreignId('admin_id')->nullable()->constrained()->onDelete('set null');
             $table->timestamps();
@@ -33,6 +32,6 @@ class CreateAttendanceChangeTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('attendance_change');
+        Schema::dropIfExists('work_break_change');
     }
 }

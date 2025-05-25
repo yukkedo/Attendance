@@ -9,14 +9,14 @@ class WorkBreak_change extends Model
 {
     use HasFactory;
 
-    public function user()
-    {
-        return $this->belongsTo(User::class);
-    }
-
     public function work_break()
     {
         return $this->belongsTo(WorkBreak::class);
+    }
+
+    public function attendanceChange()
+    {
+        return $this->belongsTo(Attendance_change::class);
     }
 
     public function admin()

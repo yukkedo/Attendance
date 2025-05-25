@@ -19,6 +19,11 @@ class Attendance_change extends Model
         return $this->belongsTo(Attendance::class);
     }
 
+    public function workChanges()
+    {
+        return $this->hasMany(WorkBreak_change::class);
+    }
+
     public function admin()
     {
         return $this->belongsTo(Admin::class);
