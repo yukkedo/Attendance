@@ -29,7 +29,7 @@ class TimeClockController extends Controller
             // まだ退勤していないか(出勤中or休憩中)
             if(is_null($attendance->clock_out)) {
                 // 休憩中かどうかを確認
-                $latestBreak = $attendance->work_breaks()
+                $latestBreak = $attendance->workBreaks()
                     ->whereNull('break_end') //休憩戻りが未登録
                     ->latest('break_start')
                     ->first(); //最新の休憩レコードを取得
@@ -112,11 +112,11 @@ class TimeClockController extends Controller
             ->first();
             
         if($attendance) {
-            $onBreak = $attendance->work_breaks()
+            $onBreak = $attendance->workBreaks()
                 ->whereNull('break_end')
                 ->first();
             if(!$onBreak) {
-                $attendance->work_breaks()->create([
+                $attendance->workBreaks()->create([
                     'break_start' =>now()->format('H:i')
                 ]);
             }    
@@ -134,7 +134,7 @@ class TimeClockController extends Controller
             ->first();
 
         if($attendance) {
-            $onBreak =$attendance->work_breaks()
+            $onBreak =$attendance->workBreaks()
                 ->whereNull('break_end')
                 ->latest('break_start')
                 ->first();

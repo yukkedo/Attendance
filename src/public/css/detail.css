@@ -51,7 +51,6 @@ td {
     border-bottom: solid 2px #E1E1E1;
 }
 
-
 .table__item:last-of-type th {
     border-bottom: none;
 }
@@ -73,6 +72,12 @@ td {
     align-items: center;
 }
 
+.date-year,
+.date-day {
+    width: 100px;
+    text-align: center;
+}
+
 .table__value,
 .table__date,
 .table__work-time,
@@ -80,6 +85,11 @@ td {
 .table__remarks {
     padding-left: 150px;
     font-weight: 700;
+}
+
+.table__value-name {
+    width: 100px;
+    text-align: center;
 }
 
 .time-in,
@@ -131,4 +141,5 @@ input.time-out::-webkit-calendar-picker-indicator {
     font-weight: 700;
     padding: 10px 30px;
     margin: 50px 0;
+    cursor: pointer;
 }

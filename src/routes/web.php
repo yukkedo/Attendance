@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AttendanceController;
+use App\Http\Controllers\AttendanceRequestController;
 use App\Http\Controllers\TimeClockController;
 use App\Http\Controllers\AuthController;
 use App\Models\Attendance;
@@ -31,4 +32,5 @@ Route::middleware('auth')->group(function () {
     Route::post('/attendance/breakEnd', [TimeClockController::class, 'breakEnd']);
     Route::get('/attendance/list', [AttendanceController::class, 'index']);
     Route::get('/attendance/list/{month?}', [AttendanceController::class, 'index']);
+    Route::get('/attendance/{id}', [AttendanceRequestController::class, 'getDetail']);
 });
