@@ -12,7 +12,7 @@
 
 <body>
     <header class="header">
-        <a class="header__link" href=""><img class="header__img" src="{{ asset('image/logo.png') }}" alt="ロゴ"></a>
+        <a class="header__link" href="/attendance"><img class="header__img" src="{{ asset('image/logo.png') }}" alt="ロゴ"></a>
         @yield('header')
     </header>
 

@@ -26,7 +26,7 @@ class Attendance extends Model
         return $this->hasMany(WorkBreak::class);
     }
 
-    public function attendance_change()
+    public function attendanceChange()
     {
         return $this->hasOne(Attendance_change::class);
     }

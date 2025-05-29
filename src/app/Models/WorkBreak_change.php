@@ -9,6 +9,15 @@ class WorkBreak_change extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'work_break_id',
+        'attendance_change_id',
+        'new_break_start',
+        'new_break_end',
+        'status',
+        'admin_id'
+    ];
+
     public function work_break()
     {
         return $this->belongsTo(WorkBreak::class);

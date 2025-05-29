@@ -18,9 +18,9 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// Route::get('/', function () {
+//     return view('welcome');
+// });
 
 Route::get('/login', [AuthController::class, 'loginShow'])->name('login');
 
@@ -33,4 +33,6 @@ Route::middleware('auth')->group(function () {
     Route::get('/attendance/list', [AttendanceController::class, 'index']);
     Route::get('/attendance/list/{month?}', [AttendanceController::class, 'index']);
     Route::get('/attendance/{id}', [AttendanceRequestController::class, 'getDetail']);
+    Route::post('/attendance/{id}', [AttendanceRequestController::class, 'requestChange']);
+    Route::get('/stamp_correction_request/list', [AttendanceRequestController::class, 'applyList']);
 });

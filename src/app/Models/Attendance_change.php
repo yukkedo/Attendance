@@ -9,6 +9,16 @@ class Attendance_change extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'user_id',
+        'attendance_id',
+        'new_clock_in',
+        'new_clock_out',
+        'remarks',
+        'status',
+        'admin_id'
+    ];
+
     public function user()
     {
         return $this->belongsTo(User::class);
@@ -19,7 +29,7 @@ class Attendance_change extends Model
         return $this->belongsTo(Attendance::class);
     }
 
-    public function workChanges()
+    public function workBreakChanges()
     {
         return $this->hasMany(WorkBreak_change::class);
     }
