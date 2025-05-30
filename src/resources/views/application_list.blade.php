@@ -11,9 +11,9 @@
 @section('header')
 <nav class="header-nav">
     <ul class="header-nav__list">
-        <li><a href="" class="header-nav__attendance">勤怠</a></li>
-        <li><a href="" class="header-nav__list">勤怠一覧</a></li>
-        <li><a href="" class="header-nav__application">申請</a></li>
+        <li><a href="/attendance" class="header-nav__attendance">勤怠</a></li>
+        <li><a href="/attendance/list" class="header-nav__list">勤怠一覧</a></li>
+        <li><a href="/stamp_correction_request/list" class="header-nav__application">申請</a></li>
         <li>
             <form action="" class="logout" method="">
                 @csrf
@@ -30,8 +30,12 @@
         申請一覧
     </div>
     <div class="page-tag">
-        <a href="">承認待ち</a>
-        <a href="">承認済み</a>
+        <a href="/stamp_correction_request/list" class="{{ $tab === 'pending' ? 'active' : '' }}">
+            承認待ち
+        </a>
+        <a href="/stamp_correction_request/list/?tab=approved" class="{{ $tab === 'approved' ? 'active' : '' }}">
+            承認済み
+        </a>
     </div>
     <div class="content__record">
         <table class="record__table">
@@ -43,16 +47,33 @@
                 <th class="table__title">申請日時</th>
                 <th class="table__title">詳細</th>
             </tr>
+            @foreach($changes as $change)
             <tr class="record-data">
-                <td class="table__status">承認待ち</td>
-                <td class="table__name">田中太郎</td>
-                <td class="table__target-date">2025/06/01</td>
-                <td class="table__application-reason">遅延のため</td>
-                <td class="table__application-date">2025/06/01</td>
+                <td class="table__status">
+                    @if($change->status === 'pending')
+                    承認待ち
+                    @else
+                    承認済み
+                    @endif
+                </td>
+                <td class="table__name">
+                    {{ $change->user->name }}
+                </td>
+                <td class="table__target-date">
+                    {{ optional($change->attendance)->work_date
+                    ? \Carbon\Carbon::parse($change->attendance->work_date)->format('Y/m/d') : '' }}
+                </td>
+                <td class="table__application-reason">
+                    {{ $change->remarks }}
+                </td>
+                <td class="table__application-date">
+                    {{ $change->created_at->format('Y/m/d') }}
+                </td>
                 <td class="table__detail">
-                    <a class="detail-link" href="">詳細</a>
+                    <a class="detail-link" href="/attendance/{{ $change->attendance->id }}">詳細</a>
                 </td>
             </tr>
+            @endforeach
         </table>
     </div>
 </div>
