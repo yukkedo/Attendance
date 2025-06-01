@@ -50,8 +50,8 @@
             @foreach($attendances as $attendance)
             <tr class="record-data">
                 <td class="table__date">{{ $attendance->formatted_date  }}</td>
-                <td class="table__work-in">{{ $attendance->clock_in }}</td>
-                <td class="table__work-out">{{ $attendance->clock_out }}</td>
+                <td class="table__work-in">{{ $attendance->clock_in ? \Carbon\Carbon::parse($attendance->clock_in)->format('H:i') : '' }}</td>
+                <td class="table__work-out">{{ $attendance->clock_out ? \Carbon\Carbon::parse($attendance->clock_out)->format('H:i') : '' }}</td>
                 <td class="table__break">{{ $attendance->break_time ?? '' }}</td>
                 <td class="table__total">{{ $attendance->work_time ?? '' }}</td>
                 <td class="table__detail">
