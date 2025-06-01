@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AdminAttendanceController;
 use App\Http\Controllers\AdminLoginController;
+use App\Http\Controllers\AdminStaffController;
 use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\AttendanceRequestController;
 use App\Http\Controllers\TimeClockController;
@@ -41,10 +42,12 @@ Route::middleware('auth')->group(function () {
 
 
 Route::prefix('admin')->group(function() {
-    Route::get('/login', [AdminLoginController::class, 'showLogin']);
+    Route::get('/login', [AdminLoginController::class, 'showLogin'])->name('login');
     Route::post('/login', [AdminLoginController::class, 'login']);
-    Route::post('/logout', [AdminLoginController::class, 'logout']);
 });
 Route::prefix('admin')->middleware('auth:admin')->group(function() {
+    Route::post('/logout', [AdminLoginController::class, 'logout']);
     Route::get('/attendance/list', [AdminAttendanceController::class, 'index']);
+    Route::get('/attendance/list/{date?}', [AdminAttendanceController::class, 'index']);
+    Route::get('/staff/list', [AdminStaffController::class, 'list']);
 });
