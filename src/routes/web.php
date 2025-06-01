@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\AdminAttendanceController;
+use App\Http\Controllers\AdminLoginController;
 use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\AttendanceRequestController;
 use App\Http\Controllers\TimeClockController;
@@ -35,4 +37,14 @@ Route::middleware('auth')->group(function () {
     Route::get('/attendance/{id}', [AttendanceRequestController::class, 'getDetail']);
     Route::post('/attendance/{id}', [AttendanceRequestController::class, 'requestChange']);
     Route::get('/stamp_correction_request/list', [AttendanceRequestController::class, 'applyList']);
+});
+
+
+Route::prefix('admin')->group(function() {
+    Route::get('/login', [AdminLoginController::class, 'showLogin']);
+    Route::post('/login', [AdminLoginController::class, 'login']);
+    Route::post('/logout', [AdminLoginController::class, 'logout']);
+});
+Route::prefix('admin')->middleware('auth:admin')->group(function() {
+    Route::get('/attendance/list', [AdminAttendanceController::class, 'index']);
 });
