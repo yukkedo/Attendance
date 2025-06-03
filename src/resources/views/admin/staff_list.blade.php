@@ -11,13 +11,13 @@
 @section('header')
 <nav class="header-nav">
     <ul class="header-nav__list">
-        <li><a href="" class="header-nav__attendance">勤怠一覧</a></li>
-        <li><a href="" class="header-nav__list">スタッフ一覧</a></li>
-        <li><a href="" class="header-nav__application">申請一覧</a></li>
+        <li><a href="/admin/attendance/list" class="header-nav__attendance">勤怠一覧</a></li>
+        <li><a href="/admin/staff/list" class="header-nav__list">スタッフ一覧</a></li>
+        <li><a href="/stamp_correction_request/list" class="header-nav__application">申請一覧</a></li>
         <li>
-            <form action="" class="logout" method="">
+            <form action="/admin/logout" class="logout" method="post">
                 @csrf
-                <a class="header-nav__item--button">ログアウト</a>
+                <button class="header-nav__item--button">ログアウト</button>
             </form>
         </li>
     </ul>
@@ -36,13 +36,15 @@
                 <th class="table__title">メールアドレス</th>
                 <th class="table__title">月次勤怠</th>
             </tr>
+            @foreach($users as $user)
             <tr class="record-data">
-                <td class="table__date">田中 太郎</td>
-                <td class="table__email">taro.tanama@gmail.com</td>
+                <td class="table__date">{{ $user->name }}</td>
+                <td class="table__email">{{ $user->email }}</td>
                 <td class="table__detail">
-                    <a class="detail-link" href="">詳細</a>
+                    <a class="detail-link" href="{{ url('/admin/attendance/staff/' . $user->id . '/' . now()->format('Y-m')) }}">詳細</a>
                 </td>
             </tr>
+            @endforeach
         </table>
     </div>
 </div>

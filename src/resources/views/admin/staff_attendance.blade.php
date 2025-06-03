@@ -11,13 +11,13 @@
 @section('header')
 <nav class="header-nav">
     <ul class="header-nav__list">
-        <li><a href="" class="header-nav__attendance">勤怠一覧</a></li>
-        <li><a href="" class="header-nav__list">スタッフ一覧</a></li>
-        <li><a href="" class="header-nav__application">申請一覧</a></li>
+        <li><a href="/admin/attendance/list" class="header-nav__attendance">勤怠一覧</a></li>
+        <li><a href="/admin/staff/list" class="header-nav__list">スタッフ一覧</a></li>
+        <li><a href="/stamp_correction_request/list" class="header-nav__application">申請一覧</a></li>
         <li>
-            <form action="" class="logout" method="">
+            <form action="/admin/logout" class="logout" method="post">
                 @csrf
-                <a class="header-nav__item--button">ログアウト</a>
+                <button class="header-nav__item--button">ログアウト</button>
             </form>
         </li>
     </ul>
@@ -27,15 +27,15 @@
 @section('content')
 <div class="list-content">
     <div class="content__title">
-        nameさんの勤怠
+        {{ $user->name}}さんの勤怠
     </div>
     <div class="content__date">
-        <a href="" class="prev-month"><img class="left-arrow" src="{{ asset('image/image_left.png') }}" alt="矢印"> 前月</a>
+        <a href="{{ url('/admin/attendance/staff/' . $user->id . '/' . $prevMonth) }}" class="prev-month"><img class="left-arrow" src="{{ asset('image/image_left.png') }}" alt="矢印"> 前月</a>
         <div class="date-month">
             <img class="img-calender" src="{{ asset('image/image_month.png') }}" alt="カレンダー">
-            <span class="date-calender">2025/06</span>
+            <span class="date-calender">{{ $currentDate }}</span>
         </div>
-        <a href="" class="next-month">翌月 <img class="right-arrow" src="{{ asset('image/image_right.png') }}" alt="矢印"></a>
+        <a href="{{ url('/admin/attendance/staff/' . $user->id . '/' . $nextMonth) }}" class=" next-month">翌月 <img class="right-arrow" src="{{ asset('image/image_right.png') }}" alt="矢印"></a>
     </div>
     <div class="content__record">
         <table class="record__table">
@@ -47,16 +47,18 @@
                 <th class="table__title">合計</th>
                 <th class="table__title">詳細</th>
             </tr>
+            @foreach($attendances as $attendance)
             <tr class="record-data">
-                <td class="table__date">06/01(木)</td>
-                <td class="table__work-in">09:00</td>
-                <td class="table__work-out">18:00</td>
-                <td class="table__break">1:00</td>
-                <td class="table__total">8:00</td>
+                <td class="table__date">{{ $attendance->formatted_date }}</td>
+                <td class="table__work-in">{{ $attendance->clock_in ? \Carbon\Carbon::parse($attendance->clock_in)->format('H:i') : '' }}</td>
+                <td class="table__work-out">{{ $attendance->clock_out ? \Carbon\Carbon::parse($attendance->clock_out)->format('H:i') : '' }}</td>
+                <td class="table__break">{{ $attendance->break_time ?? '' }}</td>
+                <td class="table__total">{{ $attendance->work_time ?? '' }}</td>
                 <td class="table__detail">
                     <a class="detail-link" href="">詳細</a>
                 </td>
             </tr>
+            @endforeach
         </table>
     </div>
     <div class="button">
