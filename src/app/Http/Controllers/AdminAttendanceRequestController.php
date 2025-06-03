@@ -5,13 +5,14 @@ namespace App\Http\Controllers;
 use App\Http\Requests\DetailRequest;
 use App\Models\Attendance;
 use App\Models\Attendance_change;
+use App\Models\WorkBreak;
 use App\Models\WorkBreak_change;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
-class AttendanceRequestController extends Controller
+class AdminAttendanceRequestController extends Controller
 {
     public function getDetail($id)
     {
@@ -61,15 +62,15 @@ class AttendanceRequestController extends Controller
             })->toArray() ?? [];
         }
 
-        if(!$isPending) {
+        if (!$isPending) {
             $breaks[] = ['start' => '', 'end' => ''];
         }
-        
+
         $remarks = $isPending ? $change->remarks : '';
 
-        return view('detail', compact(
-            'attendance',
+        return view('admin.detail', compact(
             'user',
+            'attendance',
             'year',
             'date',
             'clockIn',
@@ -87,29 +88,43 @@ class AttendanceRequestController extends Controller
         try {
             // 出退勤の変更
             $attendanceChange = Attendance_change::create([
-                'user_id' => Auth::id(),
+                'user_id' => $request->user_id,
                 'attendance_id' => $request->attendance_id,
                 'new_clock_in' => $request->new_clock_in,
                 'new_clock_out' => $request->new_clock_out,
                 'remarks' => $request->remarks,
-                'status' => 'pending',
-                'admin_id' => null,
+                'status' => 'approved',
+                'admin_id' => Auth::guard('admin')->id(),
             ]);
+            $attendance = Attendance::find($request->attendance_id);
+            $attendance->clock_in = $request->new_clock_in;
+            $attendance->clock_out = $request->new_clock_out;
+            $attendance->save();
 
             // 全ての休憩時間を登録
             foreach ($request->breaks as $index => $break) {
                 if (empty($break['start']) && empty($break['end'])) {
                     continue;
                 }
-
+                
+                $workBreakId = $request->work_break_id[$index] ?? null;
                 WorkBreak_change::create([
-                    'work_break_id' => $request->work_break_id[$index] ?? null,
+                    'work_break_id' => $workBreakId,
                     'attendance_change_id' => $attendanceChange->id,
                     'new_break_start' => $break['start'],
                     'new_break_end' => $break['end'],
-                    'status' => 'pending',
-                    'admin_id' => null,
+                    'status' => 'approved',
+                    'admin_id' => Auth::guard('admin')->id(),
                 ]);
+
+                if ($workBreakId) {
+                    $workBreak = WorkBreak::find($workBreakId);
+                    if ($workBreak) {
+                        $workBreak->break_start = $break['start'];
+                        $workBreak->break_end = $break['end'];
+                        $workBreak->save();
+                    }
+                }
             }
 
             DB::commit();
@@ -120,26 +135,8 @@ class AttendanceRequestController extends Controller
         }
     }
 
-    public function applyList(Request $request)
+    public function applyList()
     {
-        $tab = $request->query('tab','pending');
-
-        // 承認待ち
-        if ($tab === 'pending') {
-            $changes = Attendance_change::with(['user', 'attendance'])
-                ->where('status', 'pending')
-                ->get();
-        } elseif ($tab === 'approved') {
-            $changes = Attendance_change::with(['user', 'attendance'])
-                ->where('status', 'approved')
-                ->get();
-        } else {
-            $changes = collect();
-        }
-        // 承認済み
-        return view('application_list', compact(
-            'tab',
-            'changes'
-        ));
+        return view('admin.application_list');
     }
 }

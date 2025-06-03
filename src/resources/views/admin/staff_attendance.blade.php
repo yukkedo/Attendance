@@ -55,7 +55,7 @@
                 <td class="table__break">{{ $attendance->break_time ?? '' }}</td>
                 <td class="table__total">{{ $attendance->work_time ?? '' }}</td>
                 <td class="table__detail">
-                    <a class="detail-link" href="">詳細</a>
+                    <a class="detail-link" href="/attendance/{{ $attendance->id }}">詳細</a>
                 </td>
             </tr>
             @endforeach
