@@ -135,8 +135,47 @@ class AdminAttendanceRequestController extends Controller
         }
     }
 
-    public function applyList()
+    public function viewApproved(Attendance_change $attendance_correct_request)
     {
-        return view('admin.application_list');
+        $attendanceChange = $attendance_correct_request->load(['user', 'attendance', 'workBreakChanges']);
+
+        $date = \Carbon\Carbon::parse($attendanceChange->attendance->date);
+
+        return view('admin.approval', compact('attendanceChange', 'date'));
+    }
+
+    public function approve(Attendance_change $attendance_correct_request)
+    {
+        DB::transaction(function () use ($attendance_correct_request) {
+            $attendance = $attendance_correct_request->attendance;
+            
+            $attendance->update([
+                'clock_in' => $attendance_correct_request->new_clock_in,
+                'clock_out' => $attendance_correct_request->new_clock_out,
+            ]);
+            
+            WorkBreak::where('attendance_id', $attendance->id)->delete();
+
+            foreach ($attendance_correct_request->workBreakChanges as $change) {
+                WorkBreak::create([
+                    'attendance_id' => $attendance->id,
+                    'break_start' => $change->new_break_start,
+                    'break_end' => $change->new_break_end,
+                ]);
+            }
+
+            $attendance_correct_request->update([
+                'status' => 'approved',
+                'admin_id' => auth('admin')->id(),
+            ]);
+
+            foreach($attendance_correct_request->workBreakChanges as $change) {
+                $change->update([
+                    'status' => 'approved',
+                    'admin_id' => auth('admin')->id(),
+                ]);
+            }
+        });
+        return redirect('/stamp_correction_request/list');
     }
 }

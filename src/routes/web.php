@@ -8,6 +8,7 @@ use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\AttendanceRequestController;
 use App\Http\Controllers\TimeClockController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\StampCorrectionRequestController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -38,9 +39,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/attendance/list/{month?}', [AttendanceController::class, 'index']);
     // Route::get('/attendance/{id}', [AttendanceRequestController::class, 'getDetail']);
     Route::post('/attendance/{id}', [AttendanceRequestController::class, 'requestChange']);
-    Route::get('/stamp_correction_request/list', [AttendanceRequestController::class, 'applyList']);
 });
 
+Route::get('/stamp_correction_request/list', [StampCorrectionRequestController::class, 'applyList']);
 
 Route::prefix('admin')->group(function() {
     Route::get('/login', [AdminLoginController::class, 'showLogin'])->name('login');
@@ -54,7 +55,8 @@ Route::middleware('auth:admin')->group(function() {
     Route::post('/attendance/{id}', [AdminAttendanceRequestController::class, 'requestChange']);
     Route::get('/admin/staff/list', [AdminStaffController::class, 'list']);
     Route::get('/admin/attendance/staff/{user}/{month?}', [AdminStaffController::class, 'staffAttendanceList']);
-    Route::get('/stamp_correction_request/list', [AdminAttendanceRequestController::class, 'applyList']);    
+    Route::get('/stamp_correction_request/approve/{attendance_correct_request}', [AdminAttendanceRequestController::class, 'viewApproved'])->name('approve.view');
+    Route::post('/stamp_correction_request/approve/{attendance_correct_request}', [AdminAttendanceRequestController::class, 'approve']);
 });
 
 Route::get('/attendance/{id}', function ($id) {

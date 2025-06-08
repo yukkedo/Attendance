@@ -9,19 +9,35 @@
 @endsection
 
 @section('header')
+@if (auth('admin')->check())
+<nav class="header-nav">
+    <ul class="header-nav__list">
+        <li><a href="/admin/attendance/list" class="header-nav__attendance">勤怠一覧</a></li>
+        <li><a href="/admin/staff/list" class="header-nav__list">スタッフ一覧</a></li>
+        <li><a href="/stamp_correction_request/list" class="header-nav__application">申請一覧</a></li>
+        <li>
+            <form action="/admin/logout" class="logout" method="post">
+                @csrf
+                <button class="header-nav__item--button">ログアウト</button>
+            </form>
+        </li>
+    </ul>
+</nav>
+@elseif (auth('web')->check())
 <nav class="header-nav">
     <ul class="header-nav__list">
         <li><a href="/attendance" class="header-nav__attendance">勤怠</a></li>
         <li><a href="/attendance/list" class="header-nav__list">勤怠一覧</a></li>
         <li><a href="/stamp_correction_request/list" class="header-nav__application">申請</a></li>
         <li>
-            <form action="" class="logout" method="">
+            <form action="/logout" class="logout" method="post">
                 @csrf
-                <a class="header-nav__item--button">ログアウト</a>
+                <button class="header-nav__item--button">ログアウト</button>
             </form>
         </li>
     </ul>
 </nav>
+@endif
 @endsection
 
 @section('content')
@@ -70,7 +86,11 @@
                     {{ $change->created_at->format('Y/m/d') }}
                 </td>
                 <td class="table__detail">
+                    @if (auth('admin')->check())
+                    <a class="detail-link" href="/stamp_correction_request/approve/{{ $change->id }}">詳細</a>
+                    @elseif (auth('web')->check())
                     <a class="detail-link" href="/attendance/{{ $change->attendance->id }}">詳細</a>
+                    @endif
                 </td>
             </tr>
             @endforeach

@@ -119,27 +119,4 @@ class AttendanceRequestController extends Controller
             return back()->with('error', '失敗しました');
         }
     }
-
-    public function applyList(Request $request)
-    {
-        $tab = $request->query('tab','pending');
-
-        // 承認待ち
-        if ($tab === 'pending') {
-            $changes = Attendance_change::with(['user', 'attendance'])
-                ->where('status', 'pending')
-                ->get();
-        } elseif ($tab === 'approved') {
-            $changes = Attendance_change::with(['user', 'attendance'])
-                ->where('status', 'approved')
-                ->get();
-        } else {
-            $changes = collect();
-        }
-        // 承認済み
-        return view('application_list', compact(
-            'tab',
-            'changes'
-        ));
-    }
 }
