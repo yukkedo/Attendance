@@ -1,10 +1,17 @@
 .header-nav {
     display: flex;
+    justify-content: flex-end;
+    width: 100%;
 }
 
 .header-nav__list {
     display: flex;
     margin-right: 20px;
+}
+
+.header-nav__list li {
+    display: flex;
+    align-items: center;
 }
 
 .header-nav__list a {
@@ -15,6 +22,10 @@
 }
 
 .header-nav__item--button {
+    color: #ffffff;
+    background-color: #000000;
+    border: none;
+    font-size: 20px;
     cursor: pointer;
 }
 

@@ -17,7 +17,7 @@
         <li>
             <form action="/logout" class="logout" method="post">
                 @csrf
-                <a class="header-nav__item--button">ログアウト</a>
+                <button class="header-nav__item--button">ログアウト</button>
             </form>
         </li>
     </ul>
@@ -55,7 +55,7 @@
                 <td class="table__break">{{ $attendance->break_time ?? '' }}</td>
                 <td class="table__total">{{ $attendance->work_time ?? '' }}</td>
                 <td class="table__detail">
-                    <a class="detail-link" href="/attendance/{{ $attendance->id }}">詳細</a>
+                    <a class="detail-link" href="/attendance/{{ $attendance->user }}">詳細</a>
                 </td>
             </tr>
             @endforeach
