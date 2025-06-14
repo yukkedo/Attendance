@@ -28,6 +28,7 @@ use Illuminate\Support\Facades\Route;
 // });
 
 Route::get('/login', [AuthController::class, 'loginShow'])->name('login');
+Route::get('/stamp_correction_request/list', [StampCorrectionRequestController::class, 'applyList']);
 
 Route::middleware('auth')->group(function () {
     Route::get('/attendance', [TimeClockController::class, 'index']);
@@ -37,11 +38,8 @@ Route::middleware('auth')->group(function () {
     Route::post('/attendance/breakEnd', [TimeClockController::class, 'breakEnd']);
     Route::get('/attendance/list', [AttendanceController::class, 'index']);
     Route::get('/attendance/list/{month?}', [AttendanceController::class, 'index']);
-    // Route::get('/attendance/{id}', [AttendanceRequestController::class, 'getDetail']);
     Route::post('/attendance/{id}', [AttendanceRequestController::class, 'requestChange']);
 });
-
-Route::get('/stamp_correction_request/list', [StampCorrectionRequestController::class, 'applyList']);
 
 Route::prefix('admin')->group(function() {
     Route::get('/login', [AdminLoginController::class, 'showLogin'])->name('login');
@@ -51,10 +49,10 @@ Route::middleware('auth:admin')->group(function() {
     Route::post('/admin/logout', [AdminLoginController::class, 'logout']);
     Route::get('/admin/attendance/list', [AdminAttendanceController::class, 'index']);
     Route::get('/admin/attendance/list/{date?}', [AdminAttendanceController::class, 'index']);
-    // Route::get('/attendance/{id}', [AdminAttendanceRequestController::class, 'getDetail']);
     Route::post('/attendance/{id}', [AdminAttendanceRequestController::class, 'requestChange']);
     Route::get('/admin/staff/list', [AdminStaffController::class, 'list']);
     Route::get('/admin/attendance/staff/{user}/{month?}', [AdminStaffController::class, 'staffAttendanceList']);
+    Route::get('/admin/attendance/staff/{user}/export/{month?}', [AdminStaffController::class, 'export']);
     Route::get('/stamp_correction_request/approve/{attendance_correct_request}', [AdminAttendanceRequestController::class, 'viewApproved'])->name('approve.view');
     Route::post('/stamp_correction_request/approve/{attendance_correct_request}', [AdminAttendanceRequestController::class, 'approve']);
 });

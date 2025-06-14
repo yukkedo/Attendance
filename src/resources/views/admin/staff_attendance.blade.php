@@ -62,7 +62,7 @@
         </table>
     </div>
     <div class="button">
-        <button class="csv-button">CSV出力</button>
+        <a class="csv-button" href="{{ url('/admin/attendance/staff/' . $user->id . '/export'. '/'.  now()->format('Y-m')) }}">CSV出力</a>
     </div>
 </div>
 @endsection
