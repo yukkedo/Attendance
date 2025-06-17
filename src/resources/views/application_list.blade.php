@@ -10,15 +10,15 @@
 
 @section('header')
 @if (auth('admin')->check())
-<nav class="header-nav">
-    <ul class="header-nav__list">
+<nav class="admin-header-nav">
+    <ul class="admin-header-nav__list">
         <li><a href="/admin/attendance/list" class="header-nav__attendance">勤怠一覧</a></li>
-        <li><a href="/admin/staff/list" class="header-nav__list">スタッフ一覧</a></li>
+        <li><a href="/admin/staff/list" class="admin-header-nav__staff">スタッフ一覧</a></li>
         <li><a href="/stamp_correction_request/list" class="header-nav__application">申請一覧</a></li>
         <li>
             <form action="/admin/logout" class="logout" method="post">
                 @csrf
-                <button class="header-nav__item--button">ログアウト</button>
+                <button class="admin-header-nav__item--button">ログアウト</button>
             </form>
         </li>
     </ul>
@@ -27,7 +27,7 @@
 <nav class="header-nav">
     <ul class="header-nav__list">
         <li><a href="/attendance" class="header-nav__attendance">勤怠</a></li>
-        <li><a href="/attendance/list" class="header-nav__list">勤怠一覧</a></li>
+        <li><a href="/attendance/list" class="header-nav__staff">勤怠一覧</a></li>
         <li><a href="/stamp_correction_request/list" class="header-nav__application">申請</a></li>
         <li>
             <form action="/logout" class="logout" method="post">

@@ -12,7 +12,7 @@
 <nav class="header-nav">
     <ul class="header-nav__list">
         <li><a href="/admin/attendance/list" class="header-nav__attendance">勤怠一覧</a></li>
-        <li><a href="/admin/staff/list" class="header-nav__list">スタッフ一覧</a></li>
+        <li><a href="/admin/staff/list" class="header-nav__staff">スタッフ一覧</a></li>
         <li><a href="/stamp_correction_request/list" class="header-nav__application">申請一覧</a></li>
         <li>
             <form action="/admin/logout" class="logout" method="post">

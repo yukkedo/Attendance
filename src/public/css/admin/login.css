@@ -41,3 +41,9 @@
     margin-bottom: 30px;
     cursor: pointer;
 }
+
+@media screen and (min-width: 768px) and (max-width: 850px) {
+    .admin-login {
+        width: 70%;
+    }
+}
