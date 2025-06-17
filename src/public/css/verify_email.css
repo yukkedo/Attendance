@@ -1,0 +1,33 @@
+.verified {
+    width: 100%;
+    height: 100%;
+    text-align: center;
+}
+
+.email-msg {
+    width: 60%;
+    margin: 200px auto 50px;
+}
+
+.verified-button {
+    display: inline-block;
+    border: 1px solid #000000;
+    background-color: #D9D9D9;
+    border-radius: 10px;
+    width: 180px;
+    height: 50px;
+    line-height: 50px;
+    color: #000000;
+    font-size: 15px;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.email-resend {
+    display: inline-block;
+    margin-top: 50px;
+    color: #0073CC;
+    background-color: #ffffff;
+    border: none;
+    cursor: pointer;
+}

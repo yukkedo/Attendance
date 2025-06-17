@@ -8,6 +8,7 @@ use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\AttendanceRequestController;
 use App\Http\Controllers\TimeClockController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\LoginController;
 use App\Http\Controllers\StampCorrectionRequestController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -30,7 +31,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/login', [AuthController::class, 'loginShow'])->name('login');
 Route::get('/stamp_correction_request/list', [StampCorrectionRequestController::class, 'applyList']);
 
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/attendance', [TimeClockController::class, 'index']);
     Route::post('/attendance/clockIn', [TimeClockController::class, 'clockIn']);
     Route::post('/attendance/clockOut', [TimeClockController::class, 'clockOut']);
