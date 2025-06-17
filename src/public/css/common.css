@@ -15,3 +15,11 @@
     width: auto;
     height: 40px;
 }
+
+@media screen and (min-width: 768px) and (max-width: 850px) {
+    .header__img {
+        width: 70%;
+        /* height: 30px; */
+        margin-left: 10px;
+    }
+}

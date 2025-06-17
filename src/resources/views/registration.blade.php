@@ -32,14 +32,12 @@
         <p class="item__date">{{ $now->format('Y年m月d日') }}</p>
         <p class="item__time">{{ $now->format('H:i') }}</p>
 
-        <!-- 出勤ボタン -->
         @if($clockIn)
         <form action="/attendance/clockIn" method="post">
             @csrf
             <button class="item__button" type="submit">出勤</button>
         </form>
         @endif
-        <!-- 休憩入り時ボタン -->
         <div class="stamp-button">
             @if($clockOut)
             <form action="/attendance/clockOut" method="post">
@@ -54,16 +52,12 @@
             </form>
             @endif
         </div>
-
-        <!-- 休憩終わり時ボタン -->
         @if($breakEnd)
         <form action="/attendance/breakEnd" method="post">
             @csrf
             <button class="item__button--break">休憩戻</button>
         </form>
         @endif
-
-        <!-- 退勤ボタン -->
         @if($clockOutMessage)
         <p class="end-message">お疲れ様でした。</p>
         @endif

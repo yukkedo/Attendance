@@ -64,7 +64,7 @@ body {
 .record__table {
     background-color: #ffffff;
     width: 70%;
-    margin: 30px auto 0;
+    margin: 30px auto 30px;
     height: auto;
     border-radius: 10px;
     table-layout: fixed;
@@ -92,4 +92,12 @@ body {
 .detail-link {
     color: #000000;
     text-decoration: none;
+}
+
+@media screen and (min-width: 768px) and (max-width: 850px) {
+    .content__title,
+    .page-tag,
+    .record__table {
+        width: 90%;
+    }
 }
