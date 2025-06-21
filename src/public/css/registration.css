@@ -67,7 +67,6 @@ body {
     border-radius: 10px;
     border: none;
     margin-top: 50px;
-    margin-right: 20px;
     cursor: pointer;
 }
 
@@ -95,4 +94,30 @@ body {
 .stamp-button {
     display: flex;
     justify-content: center;
+}
+
+@media screen and (min-width: 768px) and (max-width: 850px) {
+    .content {
+        width: 80%;
+    }
+
+    .item__status {
+        font-size: 20px;
+    }
+
+    .item__date {
+        width: 100%;
+        font-size: 50px;
+    }
+
+    .item__time {
+        width: 100%;
+        font-size: 100px;
+    }
+
+    .item__button {
+        font-size: 30px;
+        height: 60px;
+        width: 170px;
+    }
 }

@@ -76,7 +76,7 @@ body {
 .record__table {
     background-color: #ffffff;
     width: 70%;
-    margin: 0 auto;
+    margin: 0 auto 50px;
     height: auto;
     border-radius: 10px;
     table-layout: fixed;
