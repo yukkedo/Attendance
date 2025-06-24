@@ -47,15 +47,19 @@
                 <th class="table__title">合計</th>
                 <th class="table__title">詳細</th>
             </tr>
-            @foreach($attendances as $attendance)
+            @foreach($dailyData as $day)
             <tr class="record-data">
-                <td class="table__date">{{ $attendance->formatted_date  }}</td>
-                <td class="table__work-in">{{ $attendance->clock_in ? \Carbon\Carbon::parse($attendance->clock_in)->format('H:i') : '' }}</td>
-                <td class="table__work-out">{{ $attendance->clock_out ? \Carbon\Carbon::parse($attendance->clock_out)->format('H:i') : '' }}</td>
-                <td class="table__break">{{ $attendance->break_time ?? '' }}</td>
-                <td class="table__total">{{ $attendance->work_time ?? '' }}</td>
+                <td class="table__date">{{ $day->formatted_date  }}</td>
+                <td class="table__work-in">{{ $day->clock_in ? \Carbon\Carbon::parse($day->clock_in)->format('H:i') : '' }}</td>
+                <td class="table__work-out">{{ $day->clock_out ? \Carbon\Carbon::parse($day->clock_out)->format('H:i') : '' }}</td>
+                <td class="table__break">{{ $day->break_time ?? '' }}</td>
+                <td class="table__total">{{ $day->work_time ?? '' }}</td>
                 <td class="table__detail">
-                    <a class="detail-link" href="/attendance/{{ $attendance->id }}">詳細</a>
+                    @if(isset($day->id))
+                    <a class="detail-link" href="/attendance/{{ $day->id }}">詳細</a>
+                    @else
+                    <a class="detail-link">詳細</a>
+                    @endif
                 </td>
             </tr>
             @endforeach
