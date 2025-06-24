@@ -29,7 +29,7 @@
     <div class="stamp-item">
         <p class="item__status">{{ $status }}</p>
 
-        <p class="item__date">{{ $now->format('Y年m月d日') }}</p>
+        <p class="item__date">{{ $now->format('Y年n月j日') }}({{ $weekday }})</p>
         <p class="item__time">{{ $now->format('H:i') }}</p>
 
         <div class="stamp-button">

@@ -12,7 +12,11 @@ class TimeClockController extends Controller
 {
     public function index()
     {
-        $now = Carbon::now();
+        $now = Carbon::now()->locale('ja')->timezone('Asia/Tokyo');
+
+        $weekdayMap = ['日', '月', '火', '水', '木', '金', '土'];
+        $weekday = $weekdayMap[$now->dayOfWeek];
+
         $today = $now->toDateString();
 
         $user = Auth::user();
@@ -54,6 +58,7 @@ class TimeClockController extends Controller
 
         return view('registration', compact(
             'now',
+            'weekday',
             'status',
             'clockIn',
             'clockOut',
@@ -79,7 +84,7 @@ class TimeClockController extends Controller
             'clock_in' => now()->format('H:i')
         ]);
 
-        return back();
+        return redirect('/attendance');
     }
 
     public function clockOut()
@@ -99,7 +104,7 @@ class TimeClockController extends Controller
             ]);
         }
 
-        return back();
+        return redirect('/attendance');
     }
 
     public function breakStart()
@@ -121,7 +126,7 @@ class TimeClockController extends Controller
                 ]);
             }    
         }
-        return back();
+        return redirect('/attendance');
     }
 
     public function breakEnd()
@@ -145,6 +150,6 @@ class TimeClockController extends Controller
                 ]);
             }
         }
-        return back();
+        return redirect('/attendance');
     }
 }

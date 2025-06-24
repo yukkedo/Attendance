@@ -139,7 +139,7 @@ class AdminAttendanceRequestController extends Controller
     {
         $attendanceChange = $attendance_correct_request->load(['user', 'attendance', 'workBreakChanges']);
 
-        $date = \Carbon\Carbon::parse($attendanceChange->attendance->date);
+        $date = \Carbon\Carbon::parse($attendanceChange->attendance->work_date);
 
         return view('admin.approval', compact('attendanceChange', 'date'));
     }

@@ -33,6 +33,6 @@ class CreateAttendanceChangesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('attendance_change');
+        Schema::dropIfExists('attendance_changes');
     }
 }
