@@ -10,6 +10,7 @@ use App\Http\Controllers\TimeClockController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\StampCorrectionRequestController;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -46,11 +47,12 @@ Route::prefix('admin')->group(function() {
     Route::get('/login', [AdminLoginController::class, 'showLogin'])->name('login');
     Route::post('/login', [AdminLoginController::class, 'login']);
 });
+
 Route::middleware('auth:admin')->group(function() {
     Route::post('/admin/logout', [AdminLoginController::class, 'logout']);
     Route::get('/admin/attendance/list', [AdminAttendanceController::class, 'index']);
     Route::get('/admin/attendance/list/{date?}', [AdminAttendanceController::class, 'index']);
-    Route::post('/attendance/{id}', [AdminAttendanceRequestController::class, 'requestChange']);
+    // Route::post('/attendance/{id}', [AdminAttendanceRequestController::class, 'requestChange']);
     Route::get('/admin/staff/list', [AdminStaffController::class, 'list']);
     Route::get('/admin/attendance/staff/{user}/{month?}', [AdminStaffController::class, 'staffAttendanceList']);
     Route::get('/admin/attendance/staff/{user}/export/{month?}', [AdminStaffController::class, 'export']);

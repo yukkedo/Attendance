@@ -15,7 +15,7 @@ class AttendanceRequestController extends Controller
 {
     public function getDetail($id)
     {
-        $attendance = Attendance::find($id);
+        $attendance = Attendance::with(['attendanceChange.workBreakChanges', 'workBreaks', 'user'])->find($id);
         $user = $attendance->user;
         $change = $attendance->attendanceChange;
         // 出勤日の表示変更
@@ -28,8 +28,8 @@ class AttendanceRequestController extends Controller
 
         // 出勤・退勤時間の表示
         if ($isPending) {
-            $clockIn = $change->new_clock_in ?? '';
-            $clockOut = $change->new_clock_out ?? '';
+            $clockIn = $change->new_clock_in ? Carbon::parse($change->new_clock_in)->format('H:i') : '';
+            $clockOut = $change->new_clock_out ? Carbon::parse($change->new_clock_out)->format('H:i') : '';
         } else {
             $clockIn = $attendance->clock_in
                 ? Carbon::parse($attendance->clock_in)->format('H:i')
@@ -61,10 +61,10 @@ class AttendanceRequestController extends Controller
             })->toArray() ?? [];
         }
 
-        if(!$isPending) {
+        if (!$isPending) {
             $breaks[] = ['start' => '', 'end' => ''];
         }
-        
+
         $remarks = $isPending ? $change->remarks : '';
 
         return view('detail', compact(
@@ -80,43 +80,48 @@ class AttendanceRequestController extends Controller
         ));
     }
 
-    public function requestChange(DetailRequest $request)
+    public function requestChange(DetailRequest $request, $id)
     {
-        DB::beginTransaction(); // トランザクションの開始
+        if (Auth::guard('admin')->check()) {
+            return app(\App\Http\Controllers\AdminAttendanceRequestController::class)->requestChange($request, $id);
+        }
+        if (Auth::guard('web')->check()) {
+            DB::beginTransaction(); // トランザクションの開始
 
-        try {
-            // 出退勤の変更
-            $attendanceChange = Attendance_change::create([
-                'user_id' => Auth::id(),
-                'attendance_id' => $request->attendance_id,
-                'new_clock_in' => $request->new_clock_in,
-                'new_clock_out' => $request->new_clock_out,
-                'remarks' => $request->remarks,
-                'status' => 'pending',
-                'admin_id' => null,
-            ]);
-
-            // 全ての休憩時間を登録
-            foreach ($request->breaks as $index => $break) {
-                if (empty($break['start']) && empty($break['end'])) {
-                    continue;
-                }
-
-                WorkBreak_change::create([
-                    'work_break_id' => $request->work_break_id[$index] ?? null,
-                    'attendance_change_id' => $attendanceChange->id,
-                    'new_break_start' => $break['start'],
-                    'new_break_end' => $break['end'],
+            try {
+                // 出退勤の変更
+                $attendanceChange = Attendance_change::create([
+                    'user_id' => Auth::id(),
+                    'attendance_id' => $id,
+                    'new_clock_in' => $request->new_clock_in,
+                    'new_clock_out' => $request->new_clock_out,
+                    'remarks' => $request->remarks,
                     'status' => 'pending',
                     'admin_id' => null,
                 ]);
-            }
 
-            DB::commit();
-            return back()->with('success', '送信しました');
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return back()->with('error', '失敗しました');
+                // 全ての休憩時間を登録
+                foreach ($request->breaks as $index => $break) {
+                    if (empty($break['start']) && empty($break['end'])) {
+                        continue;
+                    }
+
+                    WorkBreak_change::create([
+                        'work_break_id' => $request->work_break_id[$index] ?? null,
+                        'attendance_change_id' => $attendanceChange->id,
+                        'new_break_start' => $break['start'],
+                        'new_break_end' => $break['end'],
+                        'status' => 'pending',
+                        'admin_id' => null,
+                    ]);
+                }
+
+                DB::commit();
+                return back()->with('success', '送信しました');
+            } catch (\Exception $e) {
+                DB::rollBack();
+                return back()->with('error', '失敗しました');
+            }
         }
     }
 }

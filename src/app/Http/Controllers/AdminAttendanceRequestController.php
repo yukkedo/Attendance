@@ -81,7 +81,7 @@ class AdminAttendanceRequestController extends Controller
         ));
     }
 
-    public function requestChange(DetailRequest $request)
+    public function requestChange(DetailRequest $request, $id)
     {
         DB::beginTransaction(); // トランザクションの開始
 
@@ -89,7 +89,7 @@ class AdminAttendanceRequestController extends Controller
             // 出退勤の変更
             $attendanceChange = Attendance_change::create([
                 'user_id' => $request->user_id,
-                'attendance_id' => $request->attendance_id,
+                'attendance_id' => $id,
                 'new_clock_in' => $request->new_clock_in,
                 'new_clock_out' => $request->new_clock_out,
                 'remarks' => $request->remarks,

@@ -16,7 +16,7 @@ class AttendanceTableSeeder extends Seeder
     public function run()
     {
         $year = 2025;
-        $months = [1, 2, 3, 4, 5, 6];
+        $months = [1, 2, 3, 4, 5, 6, 7];
         $userIds = range(1, 5);
 
         foreach ($userIds as $userId) {
