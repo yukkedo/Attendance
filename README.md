@@ -14,10 +14,10 @@
 6. php artisan db:seed
 
 ### メール認証
-* 仕様技術 : mailhog
-    image: mailhog/mailhog
+* 仕様技術 : mailhog  
+    image: mailhog/mailhog  
     ports:
-      - "1025:1025"
+      - "1025:1025"  
       - "8025:8025"
 
 ### PHPUnitテスト
@@ -45,18 +45,22 @@
     name : 山田 太郎
     email : user1@example.com
     password : user12345
+
 * 一般ユーザー2
     name : 佐藤 花子
     email : user2@example.com
     password : user12345
+
 * 一般ユーザー3
     name : 鈴木 次郎
     email : user3@example.com
     password : user12345
+
 * 一般ユーザー4
     name : 高橋 恵
     email : user4@example.com
     password : user12345
+
 * 一般ユーザー5
     name : 田中 一郎
     email : user5@example.com
