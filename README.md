@@ -41,30 +41,13 @@
     password : admin12345
 
 #### 一般ユーザー
-* 一般ユーザー1
-    name : 山田 太郎
-    email : user1@example.com
-    password : user12345
-
-* 一般ユーザー2
-    name : 佐藤 花子
-    email : user2@example.com
-    password : user12345
-
-* 一般ユーザー3
-    name : 鈴木 次郎
-    email : user3@example.com
-    password : user12345
-
-* 一般ユーザー4
-    name : 高橋 恵
-    email : user4@example.com
-    password : user12345
-
-* 一般ユーザー5
-    name : 田中 一郎
-    email : user5@example.com
-    password : user12345
+| 番号 | 名前       | Email               | Password   |
+|:--:|-----------|---------------------|-----------|
+| 1 | 山田 太郎 | user1@example.com   | user12345 |
+| 2 | 佐藤 花子 | user2@example.com   | user12345 |
+| 3 | 鈴木 次郎 | user3@example.com   | user12345 |
+| 4 | 高橋 恵   | user4@example.com   | user12345 |
+| 5 | 田中 一郎 | user5@example.com   | user12345 |
 
 ## 使用技術（実行環境）
 * PHP : 7.4.9
@@ -73,7 +56,7 @@
 * nginx : 1.21.1
 
 ## ER図
-
+<img width="498" alt="Image" src="https://github.com/user-attachments/assets/8d3ad193-f6f5-4fdd-b6d3-a4d2a513361d" />
 
 ## URL
 * 開発環境 : http://localhost/
