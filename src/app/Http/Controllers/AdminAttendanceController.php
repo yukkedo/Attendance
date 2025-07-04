@@ -10,14 +10,11 @@ class AdminAttendanceController extends Controller
 {
     public function index($date = null)
     {
-        // 対象日を取得
         $targetDate = $date ? Carbon::createFromFormat('Y-m-d', $date) : Carbon::today();
 
-        // 前日・翌日を取得
         $prevDate = $targetDate->copy()->subDay()->format('Y-m-d');
         $nextDate = $targetDate->copy()->addDay()->format('Y-m-d');
 
-        // 全ユーザーの対象日の勤怠情報を取得
         $attendances = Attendance::with(['user', 'workBreaks'])
             ->whereDate('work_date', $targetDate)
             ->get();

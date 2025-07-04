@@ -18,15 +18,13 @@ class AttendanceRequestController extends Controller
         $attendance = Attendance::with(['attendanceChange.workBreakChanges', 'workBreaks', 'user'])->find($id);
         $user = $attendance->user;
         $change = $attendance->attendanceChange;
-        // 出勤日の表示変更
+
         $workDate = Carbon::parse($attendance->work_date);
         $year = $workDate->format('Y年');
         $date = $workDate->format('n月j日');
 
-        // 申請状況の判定
         $isPending = $change !== null && $change->status === 'pending';
 
-        // 出勤・退勤時間の表示
         if ($isPending) {
             $clockIn = $change->new_clock_in ? Carbon::parse($change->new_clock_in)->format('H:i') : '';
             $clockOut = $change->new_clock_out ? Carbon::parse($change->new_clock_out)->format('H:i') : '';
@@ -38,7 +36,7 @@ class AttendanceRequestController extends Controller
                 ? Carbon::parse($attendance->clock_out)->format('H:i')
                 : '';
         }
-        // 休憩時間の表示
+
         if ($isPending && $change) {
             $breaks = collect($change->workBreakChanges)->map(function ($break) {
                 return [
@@ -86,10 +84,9 @@ class AttendanceRequestController extends Controller
             return app(\App\Http\Controllers\AdminAttendanceRequestController::class)->requestChange($request, $id);
         }
         if (Auth::guard('web')->check()) {
-            DB::beginTransaction(); // トランザクションの開始
+            DB::beginTransaction(); 
 
             try {
-                // 出退勤の変更
                 $attendanceChange = Attendance_change::create([
                     'user_id' => Auth::id(),
                     'attendance_id' => $id,
@@ -100,7 +97,6 @@ class AttendanceRequestController extends Controller
                     'admin_id' => null,
                 ]);
 
-                // 全ての休憩時間を登録
                 foreach ($request->breaks as $index => $break) {
                     if (empty($break['start']) && empty($break['end'])) {
                         continue;

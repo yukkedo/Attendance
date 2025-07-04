@@ -28,17 +28,13 @@ class TimeClockController extends Controller
         $status = '勤務外';
         $onBreak = false;
 
-        // 出勤データが存在するか
         if($attendance) {
-            // まだ退勤していないか(出勤中or休憩中)
             if(is_null($attendance->clock_out)) {
-                // 休憩中かどうかを確認
                 $latestBreak = $attendance->workBreaks()
-                    ->whereNull('break_end') //休憩戻りが未登録
+                    ->whereNull('break_end') 
                     ->latest('break_start')
-                    ->first(); //最新の休憩レコードを取得
+                    ->first(); 
                 if($latestBreak) {
-                    // latestBreakが見つかれば休憩中、なければ出勤中
                     $status = '休憩中';
                     $onBreak = true;
                 }else {
@@ -49,12 +45,12 @@ class TimeClockController extends Controller
             }
         }
 
-        $clockIn = is_null($attendance);  // 出勤前
-        $onDuty = $attendance && is_null($attendance->clock_out);  // 出勤中
-        $clockOut = $onDuty && !$onBreak;  // 出勤済で退勤ボタンの表示
-        $breakStart = $onDuty && !$onBreak;  // 出勤済で休憩入りのボタンを表示
-        $breakEnd = $onBreak;  // 休憩戻りのボタンを表示
-        $clockOutMessage = $attendance && !is_null($attendance->clock_out);  // 退勤後のメッセージを表示
+        $clockIn = is_null($attendance);  
+        $onDuty = $attendance && is_null($attendance->clock_out);  
+        $clockOut = $onDuty && !$onBreak;  
+        $breakStart = $onDuty && !$onBreak;  
+        $breakEnd = $onBreak;  
+        $clockOutMessage = $attendance && !is_null($attendance->clock_out); 
 
         return view('registration', compact(
             'now',
@@ -71,9 +67,8 @@ class TimeClockController extends Controller
     public function clockIn()
     {
         $user = Auth::user();
-        $today = now()->toDateString(); // 打刻の日付を取得
+        $today = now()->toDateString(); 
 
-        // 打刻の有無を確認
         $alreadyClockedIn = Attendance::where('user_id', $user->id)
             ->where('work_date', $today)
             ->exists();
@@ -92,7 +87,6 @@ class TimeClockController extends Controller
         $user = Auth::user();
         $today = now()->toDateString();
 
-        // 今日の出勤記録を取得
         $attendance = Attendance::where('user_id', $user->id)
             ->where('work_date', $today)
             ->first();
