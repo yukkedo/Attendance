@@ -92,7 +92,58 @@ class AttendanceListTest extends TestCase
         $user->markEmailAsVerified();
         $this->actingAs($user);
 
-        $nextMonth = now()->subMonth()->format('Y-m');
+        $previousMonth = now()->subMonth()->format('Y-m');
+
+        $response = $this->get('/attendance/list/' . $previousMonth);
+
+        $firstDay = Carbon::createFromFormat('Y-m', $previousMonth)->startOfMonth();
+        $finalDay = Carbon::createFromFormat('Y-m', $previousMonth)->endOfMonth();
+
+        $attendances = Attendance::with('workBreaks')
+            ->where('user_id', $user->id)
+            ->whereBetween('work_date', [$firstDay, $finalDay])
+            ->get();
+
+        foreach ($attendances as $attendance) {
+            if ($attendance->clock_in) {
+                $response->assertSee(Carbon::parse($attendance->clock_in)->format('H:i'));
+            }
+            if ($attendance->clock_out) {
+                $response->assertSee(Carbon::parse($attendance->clock_out)->format('H:i'));
+            }
+
+            $totalBreak = $attendance->workBreaks->reduce(function ($carry, $break) {
+                if ($break->break_start && $break->break_end) {
+                    return $carry + Carbon::parse($break->break_end)->diffInMinutes(Carbon::parse($break->break_start));
+                }
+                return $carry;
+            }, 0);
+
+            $breakFormatted = $totalBreak > 0 ? sprintf('%d:%02d', intdiv($totalBreak, 60), $totalBreak % 60) : '';
+            if ($breakFormatted) {
+                $response->assertSee($breakFormatted);
+            }
+
+            if ($attendance->clock_out) {
+                $start = Carbon::parse($attendance->clock_in);
+                $end = Carbon::parse($attendance->clock_out);
+                $workMinutes = $end->diffInMinutes($start) - $totalBreak;
+
+                $workFormatted = sprintf('%d:%02d', intdiv($workMinutes, 60), $workMinutes % 60);
+                $response->assertSee($workFormatted);
+            }
+        }
+    }
+
+    public function test_attendance_list_next_month()
+    {
+        Carbon::setTestNow(Carbon::create(2025, 5));
+
+        $user = \App\Models\User::where('email', 'user1@example.com')->first();
+        $user->markEmailAsVerified();
+        $this->actingAs($user);
+
+        $nextMonth = now()->addMonth()->format('Y-m');
 
         $response = $this->get('/attendance/list/' . $nextMonth);
 

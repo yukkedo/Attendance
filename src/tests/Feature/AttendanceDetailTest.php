@@ -56,7 +56,23 @@ class AttendanceDetailTest extends TestCase
         $detailResponse->assertSee($date);
     }
 
-    
+    public function test_attendance_detail_clock_time()
+    {
+        $user = \App\Models\User::where('email', 'user1@example.com')->first();
+        $user->markEmailAsVerified();
+        $this->actingAs($user);
+
+        $attendance = Attendance::where('user_id', $user->id)->first();
+
+        $detailResponse = $this->get("/attendance/{$attendance->id}");
+        $detailResponse->assertStatus(200);
+
+        $expectedClockIn = \Carbon\Carbon::parse($attendance->clock_in)->format('H:i');
+        $expectedClockOut = \Carbon\Carbon::parse($attendance->clock_out)->format('H:i');
+
+        $detailResponse->assertSee($expectedClockIn);
+        $detailResponse->assertSee($expectedClockOut);
+    }
 
     public function test_attendance_detail_break_time()
     {

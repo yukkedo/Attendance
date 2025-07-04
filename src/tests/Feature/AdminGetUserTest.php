@@ -59,11 +59,10 @@ class AdminGetUserTest extends TestCase
         $response->assertSee($user->name);
 
         foreach ($attendances as $attendance) {
-            // 出勤日
             $date = \Carbon\Carbon::parse($attendance->work_date)
                 ->format('m/d（' . ['日', '月', '火', '水', '木', '金', '土'][\Carbon\Carbon::parse($attendance->work_date)->dayOfWeek] . '）');
             $response->assertSee($date);
-            // 出勤時間・退勤時間
+            
             if ($attendance->clock_in) {
                 $response->assertSee(\Carbon\Carbon::parse($attendance->clock_in)->format('H:i'));
             }
@@ -71,7 +70,6 @@ class AdminGetUserTest extends TestCase
                 $response->assertSee(\Carbon\Carbon::parse($attendance->clock_out)->format('H:i'));
             }
 
-            // 休憩時間（トータル）
             $totalBreakMinutes = 0;
             foreach ($attendance->workBreaks as $break) {
                 if ($break->break_start && $break->break_end) {
@@ -87,7 +85,6 @@ class AdminGetUserTest extends TestCase
                 $response->assertSee($breakTimeFormatted);
             }
 
-            // 合計勤務時間
             if ($attendance->clock_in && $attendance->clock_out) {
                 $workMinutes = \Carbon\Carbon::parse($attendance->clock_out)
                     ->diffInMinutes(\Carbon\Carbon::parse($attendance->clock_in)) - $totalBreakMinutes;

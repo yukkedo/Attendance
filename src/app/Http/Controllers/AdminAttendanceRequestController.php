@@ -19,15 +19,13 @@ class AdminAttendanceRequestController extends Controller
         $attendance = Attendance::find($id);
         $user = $attendance->user;
         $change = $attendance->attendanceChange;
-        // 出勤日の表示変更
+
         $workDate = Carbon::parse($attendance->work_date);
         $year = $workDate->format('Y年');
         $date = $workDate->format('n月j日');
 
-        // 申請状況の判定
         $isPending = $change !== null && $change->status === 'pending';
 
-        // 出勤・退勤時間の表示
         if ($isPending) {
             $clockIn = $change->new_clock_in ?? '';
             $clockOut = $change->new_clock_out ?? '';
@@ -39,7 +37,7 @@ class AdminAttendanceRequestController extends Controller
                 ? Carbon::parse($attendance->clock_out)->format('H:i')
                 : '';
         }
-        // 休憩時間の表示
+
         if ($isPending && $change) {
             $breaks = collect($change->workBreakChanges)->map(function ($break) {
                 return [
@@ -83,10 +81,9 @@ class AdminAttendanceRequestController extends Controller
 
     public function requestChange(DetailRequest $request, $id)
     {
-        DB::beginTransaction(); // トランザクションの開始
+        DB::beginTransaction(); 
 
         try {
-            // 出退勤の変更
             $attendanceChange = Attendance_change::create([
                 'user_id' => $request->user_id,
                 'attendance_id' => $id,
@@ -101,7 +98,6 @@ class AdminAttendanceRequestController extends Controller
             $attendance->clock_out = $request->new_clock_out;
             $attendance->save();
 
-            // 全ての休憩時間を登録
             foreach ($request->breaks as $index => $break) {
                 if (empty($break['start']) && empty($break['end'])) {
                     continue;
@@ -153,23 +149,22 @@ class AdminAttendanceRequestController extends Controller
                 'clock_in' => $attendance_correct_request->new_clock_in,
                 'clock_out' => $attendance_correct_request->new_clock_out,
             ]);
-            
-            WorkBreak::where('attendance_id', $attendance->id)->delete();
-
-            foreach ($attendance_correct_request->workBreakChanges as $change) {
-                WorkBreak::create([
-                    'attendance_id' => $attendance->id,
-                    'break_start' => $change->new_break_start,
-                    'break_end' => $change->new_break_end,
-                ]);
-            }
 
             $attendance_correct_request->update([
                 'status' => 'approved',
                 'admin_id' => auth('admin')->id(),
             ]);
+            
+            foreach ($attendance_correct_request->workBreakChanges as $change) {
+                $originalWorkBreak = WorkBreak::find($change->work_break_id);
 
-            foreach($attendance_correct_request->workBreakChanges as $change) {
+                if($originalWorkBreak) {
+                    $originalWorkBreak->update([
+                        'break_start' => $change->new_break_start,
+                        'break_end' => $change->new_break_end,
+                    ]);
+                } 
+
                 $change->update([
                     'status' => 'approved',
                     'admin_id' => auth('admin')->id(),

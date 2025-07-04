@@ -52,7 +52,6 @@ Route::middleware('auth:admin')->group(function() {
     Route::post('/admin/logout', [AdminLoginController::class, 'logout']);
     Route::get('/admin/attendance/list', [AdminAttendanceController::class, 'index']);
     Route::get('/admin/attendance/list/{date?}', [AdminAttendanceController::class, 'index']);
-    // Route::post('/attendance/{id}', [AdminAttendanceRequestController::class, 'requestChange']);
     Route::get('/admin/staff/list', [AdminStaffController::class, 'list']);
     Route::get('/admin/attendance/staff/{user}/{month?}', [AdminStaffController::class, 'staffAttendanceList']);
     Route::get('/admin/attendance/staff/{user}/export/{month?}', [AdminStaffController::class, 'export']);
