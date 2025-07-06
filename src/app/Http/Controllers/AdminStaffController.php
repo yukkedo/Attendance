@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Attendance;
 use App\Models\User;
 use Carbon\Carbon;
+use Carbon\CarbonPeriod;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
@@ -22,7 +23,7 @@ class AdminStaffController extends Controller
         $user = User::find($userId);
 
         $currentDateObj = $month ? Carbon::createFromFormat('Y-m', $month) : Carbon::now();
-        $currentDate = $currentDateObj->format('Y/m'); //表示の変更
+        $currentDate = $currentDateObj->format('Y/m'); 
 
         $prevMonth = $currentDateObj->copy()->subMonth()->format('Y-m');
         $nextMonth = $currentDateObj->copy()->addMonth()->format('Y-m');
@@ -33,50 +34,63 @@ class AdminStaffController extends Controller
         $attendances = Attendance::with('workBreaks')
             ->where('user_id', $userId)
             ->whereBetween('work_date', [$firstDay, $finalDay])
-            ->get();
+            ->get()
+            ->keyBy(function ($item) {
+                return  Carbon::parse($item->work_date)->format('Y-m-d');
+            });
 
         $weekday = ['日', '月', '火', '水', '木', '金', '土'];
-        foreach ($attendances as $attendance) {
-            $date = Carbon::parse($attendance->work_date);
-            $attendance->formatted_date = $date->format('m/d') . '（' . $weekday[$date->dayOfWeek] . '）';
+        $dailyDate = [];
+        $period = CarbonPeriod::create($firstDay, $finalDay);  
 
-            $totalBreak = 0;
+        foreach ($period as $date) {
+            $dateKey = $date->format('Y-m-d');
+            $formattedDate = $date->format('m/d') . '('. $weekday[$date->dayOfWeek] . ')';
 
-            foreach ($attendance->workBreaks as $break) {
-                if ($break->break_start && $break->break_end) {
-                    $start = Carbon::parse($break->break_start);
-                    $end = Carbon::parse($break->break_end);
-                    $totalBreak += $end->diffInMinutes($start);
+            if (isset($attendances[$dateKey])) {
+                $attendance = $attendances[$dateKey];
+                $attendance->formatted_date = $formattedDate;
+
+                $totalBreak = 0;
+                foreach ($attendance->workBreaks as $break) {
+                    if ($break->break_start && $break->break_end) {
+                        $start = Carbon::parse($break->break_start);
+                        $end = Carbon::parse($break->break_end);
+                        $totalBreak += $end->diffInMinutes($start);
+                    }
                 }
-            }
 
-            if ($totalBreak > 0) {
-                $hours = floor($totalBreak / 60);
-                $minutes = $totalBreak % 60;
-                $attendance->break_time = sprintf('%d:%02d', $hours, $minutes);
+                $attendance->break_time = $totalBreak > 0 
+                    ? sprintf('%d:%02d', floor($totalBreak / 60), $totalBreak % 60) : '';
+
+                if ($attendance->clock_in && $attendance->clock_out) {
+                    $start = Carbon::parse($attendance->clock_in);
+                    $end = Carbon::parse($attendance->clock_out);
+                    $workMinutes = $end->diffInMinutes($start) - $totalBreak;
+
+                    $attendance->work_time = sprintf('%d:%02d', floor($workMinutes / 60), $workMinutes % 60);
+                } else {
+                    $attendance->work_time = '';
+                }
+
+                $dailyData[] = $attendance;
             } else {
-                $attendance->break_time = '';
-            }
-
-            if ($attendance->clock_in && $attendance->clock_out) {
-                $start = Carbon::parse($attendance->clock_in);
-                $end = Carbon::parse($attendance->clock_out);
-                $workMinutes = $end->diffInMinutes($start) - $totalBreak;
-
-                $hours = floor($workMinutes / 60);
-                $minutes = $workMinutes % 60;
-                $attendance->work_time = sprintf('%d:%02d', $hours, $minutes);
-            } else {
-                $attendance->work_time = '';
+                $dailyData[] = (object) [
+                    'formatted_date' => $formattedDate,
+                    'clock_in' => null,
+                    'clock_out' => null,
+                    'break_time' => '',
+                    'work_time' => '',
+                ];
             }
         }
 
         return view('admin.staff_attendance', compact(
             'user',
+            'dailyData',
             'currentDate',
             'prevMonth',
             'nextMonth',
-            'attendances'
         ));
     }
 

@@ -47,7 +47,7 @@
                 <th class="table__title">合計</th>
                 <th class="table__title">詳細</th>
             </tr>
-            @foreach($attendances as $attendance)
+            @foreach($dailyData as $attendance)
             <tr class="record-data">
                 <td class="table__date">{{ $attendance->formatted_date }}</td>
                 <td class="table__work-in">{{ $attendance->clock_in ? \Carbon\Carbon::parse($attendance->clock_in)->format('H:i') : '' }}</td>
@@ -55,7 +55,11 @@
                 <td class="table__break">{{ $attendance->break_time ?? '' }}</td>
                 <td class="table__total">{{ $attendance->work_time ?? '' }}</td>
                 <td class="table__detail">
+                    @if(isset($attendance->id))
                     <a class="detail-link" href="/attendance/{{ $attendance->id }}">詳細</a>
+                    @else
+                    <a class="detail-link">詳細</a>
+                    @endif
                 </td>
             </tr>
             @endforeach
